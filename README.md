@@ -21,7 +21,11 @@
 - - View from above the right hoop
 
 ## Required Screenshots
+Overall View
 ![Overall View](/screenshots/overall_view.jpg)
+Centered Basketball
 ![Centered Basketball](/screenshots/centered_ball.jpg)
+Close Up of Net
 ![Close Up of Net](/screenshots/hoop_close_up.jpg)
+Camera Control
 ![Camera Control](/screenshots/camera_controls.jpg)
