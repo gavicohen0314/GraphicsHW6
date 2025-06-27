@@ -29,3 +29,7 @@ Close Up of Net
 ![Close Up of Net](/screenshots/hoop_close_up.jpg)
 Camera Control
 ![Camera Control](/screenshots/camera_controls.jpg)
+
+## Sources for External Textures Used
+- [Diagonal Parquet Floor PBR Texture by Jenelle van Heerden](https://polyhaven.com/a/diagonal_parquet)
+- [Basketball Texture with Normal Map by Alexander Buzin](https://medium.com/whitestormjs-framework/developing-a-street-basketball-game-part-i-getting-workflow-ready-f4f6968e4d10)
