@@ -411,8 +411,6 @@ scoreElement.innerHTML = `
 
 document.body.appendChild(scoreElement);
 
-
-
 // Handle key events
 function handleKeyDown(e) {
   switch (e.key.toLowerCase()) {
@@ -425,6 +423,12 @@ function handleKeyDown(e) {
       break;
   }
 }
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 document.addEventListener('keydown', handleKeyDown);
 
