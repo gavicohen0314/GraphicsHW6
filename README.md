@@ -1,35 +1,76 @@
-# Computer Graphics - Exercise 5 - WebGL Basketball Court
+# Computer Graphics - Exercise 6 - WebGL Basketball Shooting Game
+
+A fully interactive 3D basketball court built using Three.js, featuring realistic shooting mechanics, sound effects, scoring logic, and dynamic UI components.
 
 ## Running the code:
 1. Clone this repository to your local machine
 2. Make sure you have Node.js installed
-3. Start the local web server: `node index.js`
-4. Open your browser and go to http://localhost:8000
+3. In your terminal, run `npm install` to install all dependencies.
+4. Start the local web server: `node index.js`
+5. Open your browser and go to http://localhost:8000
 
 ## Group Members
 - Gavriel Cohen
 - Basel Massarweh
 
-## Bonus Features
-- Detailed Court Markings – free throw areas and court boundary.
-- Detailed PBR Textures – parquet floor with color/normal/roughness maps. Basketball with seams normal map.
-- Stadium Lighting Rig – four high‑intensity spotlights plus two pointlights behind the hoops.
-- Multiple Camera Presets, switchable with the 'C' key:
-- - Default sideline view
-- - Center-line view facing a hoop
-- - Free-throw area view
-- - View from above the right hoop
+## Controls
+- **O** - Toggle orbit camera on/off.
+- **C** - Switch between camera presets.
+- **←↑↓→* - Move ball starting position.
+- **W** - Increase shot power.
+- **S** - Decrease shot power.
+- **Space** - Shoot ball at nearest hoop to center of vision.
+- **R** - Reset ball to starting position.
 
-## Required Screenshots
-Overall View
-![Overall View](/screenshots/overall_view.jpg)
-Centered Basketball
-![Centered Basketball](/screenshots/centered_ball.jpg)
-Close Up of Net
-![Close Up of Net](/screenshots/hoop_close_up.jpg)
-Camera Control
-![Camera Control](/screenshots/camera_controls.jpg)
+# Physics Implementation
+The physics system simulates a simplified but visually realistic motion for a basketball:
 
-## Sources for External Textures Used
+## Frame handling
+- Update vertical velocity with a constant gravity term.
+- Move the ball by `velocity × dt`, where dt is the time difference between now and the last frame.
+- When the browser tab is hidden, the animations are paused. When returning, the timer resets to prevent a huge dt value, which would cause a sudden huge change in velocity.
+
+## Launching a shot
+- Choose the hoop whose direction aligns best with the camera’s forward vector.
+- Compute the horizontal direction on the X‑Z plane to the hoop, normalise it, then scale it by a power‑dependent speed.
+- Vertical speed is also power‑dependent but biased so close shots go higher and long shots travel flatter.
+- Assign the combined velocity vector and flag the ball as 'in flight'.
+
+## Collision system - checked at every frame
+- **Floor** – If the ball's vertical distance to the floor is smaller than an epsilon value, flip the Y‑velocity with restitution and apply friction to X/Z. If the bounce energy is too low, the ball comes to rest.
+- **Court boundary** – If the ball exits the court, it falls off. Once it drops below a certain height it becomes invisible and is positioned underneath the court until the user resets.
+- **Backboard** – Axis‑aligned bounding‑box test. On contact, reflect velocity about the contact normal and damp by a restitution factor.
+- **Support poles** – Cylinder test (radius in X‑Z, finite height). Same reflect‑and‑damp rule.
+- **Net** – A frustrum. Detects contact with the walls and pushes the ball outward, and reflects velocity with softer damping. Also sets a `swish` flag if the rim was never touched.
+
+## Ball rotation
+- Measure displacement since last frame.
+- Use the cross‑product of that displacement with the up‑axis to derive a spin axis.
+- Grounded: rotate by arc‑length/radius (rolling).
+- Airborne: rotate at half that rate to simulate back‑spin.
+
+## Scoring logic
+- Track entry and exit of the ball inside the net volume.
+- If it enters from the top and exits through the bottom, assign points.
+- Regular = 2 points, Swish (no wall contact) = 4 points, and Combo Shots = 3 points.
+- Update scoreboard, accuracy stats, pop‑up banner, and play corresponding sounds.
+
+# Bonus Features
+- **Multiple Hoops**: Allow shooting at both hoops with automatic targeting.
+- **Swish Detection**: Bonus points for shots that don't touch the rim.
+- **Combo System**: Consecutive shots award bonus points.
+- **Sound Effects**: Audio feedback for bounces, scores and misses.
+- **Ball Trail Effect**: Visual trail following the basketball during flight.
+- **Collapsable/Expandable UI Widgets**: The statistics and controls panel can be hidden and expanded using buttons.
+
+## Video of Gameplay
+https://github.com/user-attachments/assets/00b2f50e-be3d-4dad-9e06-f551933cf939
+
+## Sources for External Textures, Icons and Sounds Used
 - [Diagonal Parquet Floor PBR Texture by Jenelle van Heerden](https://polyhaven.com/a/diagonal_parquet)
 - [Basketball Texture with Normal Map by Alexander Buzin](https://medium.com/whitestormjs-framework/developing-a-street-basketball-game-part-i-getting-workflow-ready-f4f6968e4d10)
+- [Tab Icon from favicon.io](https://favicon.io/)
+- [Bounce Sound Effect from Youtube Channel - Sounds And Effects](https://www.youtube.com/watch?v=k5VQOd3btJ0&ab_channel=SoundsAndEffects)
+- [Cheer Sound Effect from Pixabay - Driken5482](https://pixabay.com/sound-effects/crowd-applause-236697/)
+- [Boo Sound Effect from Pixabay - Universfield](https://pixabay.com/sound-effects/crowd-disappointment-reaction-352718/)
+- [Commentator Sounds generated by Elevenlabs AI TTS](https://elevenlabs.io/)
